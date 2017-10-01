@@ -13,6 +13,14 @@ namespace QikLaunch
             this.Beautify();
             
             Loaded += QuickLaunch_Loaded;
+            Query.TextChanged += Query_TextChanged;
+        }
+
+        private void Query_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            var matchingLinks = App.Autocomplete(Query.Text);
+
+            // TODO
         }
 
         /// <summary>

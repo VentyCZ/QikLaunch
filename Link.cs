@@ -50,6 +50,11 @@ namespace QikLaunch
         public string Title { get; private set; }
 
         /// <summary>
+        /// Shortcut title, used for mathing
+        /// </summary>
+        private string TitleLC;
+
+        /// <summary>
         /// Shortcut description
         /// </summary>
         public string Description { get; private set; }
@@ -107,6 +112,7 @@ namespace QikLaunch
             TargetArguments = link.Arguments;
             Description = link.Description;
             Title = Path.GetFileNameWithoutExtension(link.FullName);
+            TitleLC = Title.ToLower();
             TargetWorkingDirectory = link.WorkingDirectory;
             Hotkey = link.Hotkey;
             TargetState = (RunIn)link.WindowStyle;
@@ -118,7 +124,7 @@ namespace QikLaunch
                 TargetWindowStyle = ProcessWindowStyle.Maximized;
             else if (TargetState == RunIn.Minimized)
                 TargetWindowStyle = ProcessWindowStyle.Minimized;
-            
+
             // NOTE: Experimental
             // (https://blogs.msdn.microsoft.com/abhinaba/2013/04/02/c-code-for-creating-shortcuts-with-admin-privilege/)
             using (FileStream fs = new FileStream(linkLocation, FileMode.Open, FileAccess.Read))
@@ -127,6 +133,16 @@ namespace QikLaunch
                 int b = fs.ReadByte();
                 TargetAsAdmin = (b & 0x22) > 0;
             }
+        }
+
+        /// <summary>
+        /// Checks if the title matches the term
+        /// </summary>
+        /// <param name="term">Lowercase term</param>
+        /// <returns>If it matches, or not</returns>
+        public bool Matches(string term)
+        {
+            return TitleLC.Contains(term);
         }
 
         /// <summary>
